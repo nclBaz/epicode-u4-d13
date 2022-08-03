@@ -14,14 +14,13 @@ booksRouter.post("/", async (req, res, next) => {
 booksRouter.get("/", async (req, res, next) => {
   try {
     const mongoQuery = q2m(req.query)
-    console.log("QUERY: ", req.query)
-    console.log("MONGO-QUERY: ", mongoQuery)
+
     const total = await BooksModel.countDocuments(mongoQuery.criteria)
     const books = await BooksModel.find(mongoQuery.criteria, mongoQuery.options.fields)
       .limit(mongoQuery.options.limit) // no matter the order of usage of these three methods, Mongo will ALWAYS apply SORT then SKIP then LIMIT in this order
       .skip(mongoQuery.options.skip)
       .sort(mongoQuery.options.sort)
-    res.send({ total, totalPages: Math.ceil(total / mongoQuery.options.limit), books })
+    res.send({ links: mongoQuery.links("http://localhost:3001/books", total), total, totalPages: Math.ceil(total / mongoQuery.options.limit), books })
   } catch (error) {
     next(error)
   }

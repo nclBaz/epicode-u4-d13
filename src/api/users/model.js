@@ -14,6 +14,7 @@ const usersSchema = new Schema(
       street: { type: String },
       number: { type: Number },
     },
+    purchaseHistory: [{ title: String, category: String, asin: String, price: Number, purchaseDate: Date }],
   },
   {
     timestamps: true, // this option automatically handles createdAt and updatedAt fields
